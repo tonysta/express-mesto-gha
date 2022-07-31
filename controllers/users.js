@@ -28,8 +28,14 @@ module.exports.createUser = (req, res) => {
   } = req.body;
 
   user.create({
-    name,
-    about,
-    avatar
-  });
+      name,
+      about,
+      avatar
+    })
+    .then(card => res.send({
+      data: card
+    }))
+    .catch(() => res.status(500).send({
+      message: 'ошибка'
+    }))
 };
