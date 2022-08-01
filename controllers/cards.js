@@ -15,16 +15,18 @@ module.exports.createCard = (req, res) => {
     name,
     link
   } = req.body;
+  const userId = req.user._id;
 
   card.create({
       name,
-      link
+      link,
+      owner: userId
     })
     .then(card => res.send({
       data: card
     }))
-    .catch(() => res.status(500).send({
-      message: 'ошибка'
+    .catch((err) => res.status(500).send({
+      message: `${err}`
     }))
 };
 
@@ -38,8 +40,40 @@ module.exports.deleteCard = (req, res) => {
     }))
 }
 
-// PATCH /users/me — обновляет профиль
-// PATCH /users/me/avatar — обновляет аватар
+module.exports.likeCard = (req, res) => {
+  card.findByIdAndUpdate(
+      req.params.cardId, {
+        $addToSet: {
+          likes: req.user._id
+        }
+      }, // добавить _id в массив, если его там нет
+      {
+        new: true
+      },
+    )
+    .then((card) => res.send({
+      data: card
+    }))
+    .catch((err) => res.status(500).send({
+      message: `${err}`
+    }))
+}
 
-// PUT /cards/:cardId/likes — поставить лайк карточке
-// DELETE /cards/:cardId/likes — убрать лайк с карточки
+module.exports.dislikeCard = (req, res) => {
+  card.findByIdAndUpdate(
+      req.params.cardId, {
+        $pull: {
+          likes: req.user._id
+        }
+      }, // убрать _id из массива
+      {
+        new: true
+      },
+    )
+    .then((card) => res.send({
+      data: card
+    }))
+    .catch((err) => res.status(500).send({
+      message: `${err}`
+    }))
+};

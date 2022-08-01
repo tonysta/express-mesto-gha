@@ -12,4 +12,7 @@ usersRouter.get('/users/:userId', getUser);
 
 usersRouter.post('/users', createUser);
 
+// PATCH /users/me — обновляет профиль
+// PATCH /users/me/avatar — обновляет аватар
+
 module.exports = usersRouter;
