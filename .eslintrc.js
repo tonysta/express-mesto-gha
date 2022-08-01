@@ -12,5 +12,5 @@ module.exports = {
   },
   rules: {
      "allow": ["foo_", "_bar"],
-    },
+  },
 };

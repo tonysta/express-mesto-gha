@@ -28,14 +28,30 @@ module.exports.createUser = (req, res) => {
   } = req.body;
 
   user.create({
-      name,
-      about,
-      avatar
-    })
-    .then(card => res.send({
-      data: card
+    name,
+    about,
+    avatar
+  })
+    .then(user => res.send({
+      data: user
     }))
     .catch(() => res.status(500).send({
       message: 'ошибка'
     }))
+};
+
+module.exports.updateUser = (req, res) => {
+  const { name, about } = req.body;
+  const userId = req.user._id;
+  user.findByIdAndUpdate(userId, { name, about })
+    .then(user => res.send({ data: user }))
+    .catch((err) => res.status(500).send({ message: `${err}` }))
+};
+
+module.exports.updateUserAvatar = (req, res) => {
+  const { avatar } = req.body;
+  const userId = req.user._id;
+  user.findByIdAndUpdate(userId, { avatar })
+    .then(user => res.send({ data: user }))
+    .catch((err) => res.status(500).send({ message: `${err}` }))
 };
