@@ -4,7 +4,7 @@ module.exports.handleError = (err, res) => {
     return;
   }
   if (err.name === 'CastError') {
-    res.status(404).send({ message: 'Объект не найден' });
+    res.status(400).send({ message: 'Объект не найден' });
     return;
   }
   res.status(500).send({ message: 'Что-то пошло не так' });
