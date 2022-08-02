@@ -1,11 +1,12 @@
 const Card = require('../models/card');
+const { handleError } = require('../utils/handleError');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({
       data: cards,
     }))
-    .catch((err) => res.status(500).send(`message: ${err.message}`));
+    .catch((err) => handleError(err, res));
 };
 
 module.exports.createCard = (req, res) => {
@@ -23,13 +24,7 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send({
       data: card,
     }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send(`message: ${err.message}`);
-      } else {
-        res.status(500).send(`message: ${err.message}`);
-      }
-    });
+    .catch((err) => handleError(err, res));
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -37,13 +32,7 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => res.send({
       data: card,
     }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send(`message: ${err.message}`);
-      } else {
-        res.status(500).send(`message: ${err.message}`);
-      }
-    });
+    .catch((err) => handleError(err, res));
 };
 
 module.exports.likeCard = (req, res) => {
@@ -61,13 +50,7 @@ module.exports.likeCard = (req, res) => {
     .then((card) => res.send({
       data: card,
     }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send(`message: ${err.message}`);
-      } else {
-        res.status(500).send(`message: ${err.message}`);
-      }
-    });
+    .catch((err) => handleError(err, res));
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -85,11 +68,5 @@ module.exports.dislikeCard = (req, res) => {
     .then((card) => res.send({
       data: card,
     }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send(`message: ${err.message}`);
-      } else {
-        res.status(500).send(`message: ${err.message}`);
-      }
-    });
+    .catch((err) => handleError(err, res));
 };
