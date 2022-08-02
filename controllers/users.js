@@ -1,57 +1,55 @@
-const user = require('../models/user');
+const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
-  user.find({})
-    .then(users => res.send({
-      data: users
+  User.find({})
+    .then((users) => res.send({
+      data: users,
     }))
     .catch(() => res.status(500).send({
-      message: 'ошибка'
+      message: 'ошибка',
     }));
 };
 
 module.exports.getUser = (req, res) => {
-  user.findById(req.params.userId)
-    .then(user => res.send({
-      user
+  User.findById(req.params.userId)
+    .then((user) => res.send({
+      user,
     }))
-    .catch(() => res.status(500).send({
-      message: 'ошибка'
-    }))
+    .catch((err) => res.status(404).send(err));
 };
 
 module.exports.createUser = (req, res) => {
   const {
     name,
     about,
-    avatar
+    avatar,
   } = req.body;
 
-  user.create({
+  User.create({
     name,
     about,
-    avatar
+    avatar,
   })
-    .then(user => res.send({
-      data: user
+    .then((user) => res.send({
+      data: user,
     }))
     .catch(() => res.status(500).send({
-      message: 'ошибка'
-    }))
+      message: 'ошибка',
+    }));
 };
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
-  user.findByIdAndUpdate(userId, { name, about })
-    .then(user => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: `${err}` }))
+  User.findByIdAndUpdate(userId, { name, about })
+    .then((user) => res.send({ data: user }))
+    .catch((err) => res.status(500).send({ message: `${err}` }));
 };
 
 module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
-  user.findByIdAndUpdate(userId, { avatar })
-    .then(user => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: `${err}` }))
+  User.findByIdAndUpdate(userId, { avatar })
+    .then((user) => res.send({ data: user }))
+    .catch((err) => res.status(500).send({ message: `${err}` }));
 };

@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   avatar: {
     required: true,
     type: String,
-  }
+  },
 });
 
 module.exports = mongoose.model('user', userSchema);
