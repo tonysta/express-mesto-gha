@@ -29,9 +29,13 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.send({
-      data: card,
-    }))
+    .then((card) => {
+      if (card) {
+        res.send({ data: card });
+      } else {
+        res.status(404).send({ message: 'Такой карточки не существует' });
+      }
+    })
     .catch((err) => handleError(err, res));
 };
 
@@ -47,9 +51,13 @@ module.exports.likeCard = (req, res) => {
       new: true,
     },
   )
-    .then((card) => res.send({
-      data: card,
-    }))
+    .then((card) => {
+      if (card) {
+        res.send({ data: card });
+      } else {
+        res.status(404).send({ message: 'Такой карточки не существует' });
+      }
+    })
     .catch((err) => handleError(err, res));
 };
 
@@ -65,8 +73,12 @@ module.exports.dislikeCard = (req, res) => {
       new: true,
     },
   )
-    .then((card) => res.send({
-      data: card,
-    }))
+    .then((card) => {
+      if (card) {
+        res.send({ data: card });
+      } else {
+        res.status(404).send({ message: 'Такой карточки не существует' });
+      }
+    })
     .catch((err) => handleError(err, res));
 };
