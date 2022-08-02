@@ -1,5 +1,6 @@
 const Card = require('../models/card');
 const { handleError } = require('../utils/handleError');
+const { NotFound } = require('../utils/constants');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -33,7 +34,7 @@ module.exports.deleteCard = (req, res) => {
       if (card) {
         res.send({ data: card });
       } else {
-        res.status(404).send({ message: 'Такой карточки не существует' });
+        res.status(NotFound).send({ message: 'Такой карточки не существует' });
       }
     })
     .catch((err) => handleError(err, res));
@@ -55,7 +56,7 @@ module.exports.likeCard = (req, res) => {
       if (card) {
         res.send({ data: card });
       } else {
-        res.status(404).send({ message: 'Такой карточки не существует' });
+        res.status(NotFound).send({ message: 'Такой карточки не существует' });
       }
     })
     .catch((err) => handleError(err, res));
@@ -77,7 +78,7 @@ module.exports.dislikeCard = (req, res) => {
       if (card) {
         res.send({ data: card });
       } else {
-        res.status(404).send({ message: 'Такой карточки не существует' });
+        res.status(NotFound).send({ message: 'Такой карточки не существует' });
       }
     })
     .catch((err) => handleError(err, res));

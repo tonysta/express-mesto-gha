@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const { handleError } = require('../utils/handleError');
+const { NotFound } = require('../utils/constants');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -15,7 +16,7 @@ module.exports.getUser = (req, res) => {
       if (user) {
         res.send({ data: user });
       } else {
-        res.status(404).send({ message: 'Такого пользователя не существует' });
+        res.status(NotFound).send({ message: 'Такого пользователя не существует' });
       }
     })
     .catch((err) => handleError(err, res));
@@ -43,7 +44,13 @@ module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(NotFound).send({ message: 'Такого пользователя не существует' });
+      }
+    })
     .catch((err) => handleError(err, res));
 };
 
@@ -51,6 +58,12 @@ module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(NotFound).send({ message: 'Такого пользователя не существует' });
+      }
+    })
     .catch((err) => handleError(err, res));
 };

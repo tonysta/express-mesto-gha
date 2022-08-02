@@ -1,11 +1,13 @@
+const { BadRequest, InternalServerError } = require('./constants');
+
 module.exports.handleError = (err, res) => {
   if (err.name === 'ValidationError') {
-    res.status(400).send({ message: 'Переданы некорректные данные' });
+    res.status(BadRequest).send({ message: err.message });
     return;
   }
   if (err.name === 'CastError') {
-    res.status(400).send({ message: 'Объект не найден' });
+    res.status(BadRequest).send({ message: 'Объект не найден' });
     return;
   }
-  res.status(500).send({ message: 'Что-то пошло не так' });
+  res.status(InternalServerError).send({ message: 'Что-то пошло не так' });
 };

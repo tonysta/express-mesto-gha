@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const usersRoute = require('./routes/users');
 const cardsRoute = require('./routes/cards');
+const { NotFound } = require('./utils/constants');
 
 const app = express();
 
@@ -27,10 +28,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', usersRoute);
-app.use('/', cardsRoute);
+app.use('/users', usersRoute);
+app.use('/cards', cardsRoute);
 app.use((req, res) => {
-  res.status(404).send({ message: 'Cтраницы не существует' });
+  res.status(NotFound).send({ message: 'Cтраницы не существует' });
 });
 
 app.listen(PORT, () => {
