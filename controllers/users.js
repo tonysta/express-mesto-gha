@@ -5,9 +5,7 @@ module.exports.getUsers = (req, res) => {
     .then((users) => res.send({
       data: users,
     }))
-    .catch(() => res.status(500).send({
-      message: 'ошибка',
-    }));
+    .catch((err) => res.status(500).send(`message: ${err.message}`));
 };
 
 module.exports.getUser = (req, res) => {
@@ -15,7 +13,13 @@ module.exports.getUser = (req, res) => {
     .then((user) => res.send({
       user,
     }))
-    .catch((err) => res.status(404).send(err));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(404).send(`message: ${err.message}`);
+      } else {
+        res.status(500).send(`message: ${err.message}`);
+      }
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -33,23 +37,39 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({
       data: user,
     }))
-    .catch(() => res.status(500).send({
-      message: 'ошибка',
-    }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send(`message: ${err.message}`);
+      } else {
+        res.status(500).send(`message: ${err.message}`);
+      }
+    });
 };
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { name, about })
+  User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: `${err}` }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send(`message: ${err.message}`);
+      } else {
+        res.status(500).send(`message: ${err.message}`);
+      }
+    });
 };
 
 module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { avatar })
+  User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: `${err}` }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send(`message:${err.message}`);
+      } else {
+        res.status(500).send(`message:${err.message}`);
+      }
+    });
 };

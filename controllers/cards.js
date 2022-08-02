@@ -5,9 +5,7 @@ module.exports.getCards = (req, res) => {
     .then((cards) => res.send({
       data: cards,
     }))
-    .catch(() => res.status(500).send({
-      message: 'ошибка',
-    }));
+    .catch((err) => res.status(500).send(`message: ${err.message}`));
 };
 
 module.exports.createCard = (req, res) => {
@@ -25,9 +23,13 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send({
       data: card,
     }))
-    .catch((err) => res.status(500).send({
-      message: `${err}`,
-    }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send(`message: ${err.message}`);
+      } else {
+        res.status(500).send(`message: ${err.message}`);
+      }
+    });
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -35,9 +37,13 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => res.send({
       data: card,
     }))
-    .catch(() => res.status(500).send({
-      message: 'ошибка',
-    }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(404).send(`message: ${err.message}`);
+      } else {
+        res.status(500).send(`message: ${err.message}`);
+      }
+    });
 };
 
 module.exports.likeCard = (req, res) => {
@@ -55,7 +61,13 @@ module.exports.likeCard = (req, res) => {
     .then((card) => res.send({
       data: card,
     }))
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(404).send(`message: ${err.message}`);
+      } else {
+        res.status(500).send(`message: ${err.message}`);
+      }
+    });
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -73,7 +85,11 @@ module.exports.dislikeCard = (req, res) => {
     .then((card) => res.send({
       data: card,
     }))
-    .catch((err) => res.status(500).send({
-      message: `${err}`,
-    }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(404).send(`message: ${err.message}`);
+      } else {
+        res.status(500).send(`message: ${err.message}`);
+      }
+    });
 };
