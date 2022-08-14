@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const { handleError } = require('../utils/handleError');
 const { NotFound } = require('../utils/constants');
@@ -27,13 +28,18 @@ module.exports.createUser = (req, res) => {
     name,
     about,
     avatar,
+    password,
+    email,
   } = req.body;
 
-  User.create({
-    name,
-    about,
-    avatar,
-  })
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash, // записываем хеш в базу
+    }))
     .then((user) => res.send({
       data: user,
     }))
@@ -66,4 +72,31 @@ module.exports.updateUserAvatar = (req, res) => {
       }
     })
     .catch((err) => handleError(err, res));
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+      // сравниваем переданный пароль и хеш из базы
+      return bcrypt.compare(password, user.password);
+    })
+    .then((matched) => {
+      if (!matched) {
+        // хеши не совпали — отклоняем промис
+        return Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+
+      // аутентификация успешна
+      return res.send({ message: 'Всё верно!' });
+    })
+    .catch((err) => {
+      // возвращаем ошибку аутентификации
+      res
+        .status(401)
+        .send({ message: err.message });
+    });
 };

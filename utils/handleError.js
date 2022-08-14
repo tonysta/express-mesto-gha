@@ -9,5 +9,5 @@ module.exports.handleError = (err, res) => {
     res.status(BadRequest).send({ message: 'Объект не найден' });
     return;
   }
-  res.status(InternalServerError).send({ message: 'Что-то пошло не так' });
+  res.status(InternalServerError).send({ err, message: 'Что-то пошло не так' });
 };
