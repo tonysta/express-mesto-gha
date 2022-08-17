@@ -85,12 +85,7 @@ module.exports.login = (req, res) => {
           'some-secret-key',
           { expiresIn: '7d' },
         );
-        res
-          .cookie('jwt', token, {
-            maxAge: 3600000,
-            httpOnly: true,
-          })
-          .end();
+        res.send({ token });
       } else {
         res.status(Unauthorized).send({ message: 'Неправильные почта или пароль' });
       }
