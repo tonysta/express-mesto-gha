@@ -12,6 +12,18 @@ module.exports.getUsers = (req, res) => {
     .catch((err) => handleError(err, res));
 };
 
+module.exports.getUserMe = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(NotFound).send({ message: 'Такого пользователя не существует' });
+      }
+    })
+    .catch((err) => handleError(err, res));
+};
+
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {

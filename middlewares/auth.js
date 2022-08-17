@@ -3,7 +3,7 @@ const { Unauthorized } = require('../utils/constants');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
-  console.log(req.headers);
+  console.log(req);
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return res
       .status(Unauthorized)
