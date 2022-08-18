@@ -6,5 +6,5 @@ const Conflict = 409;
 const Forbidden = 403;
 
 module.exports = {
-  BadRequest, NotFound, InternalServerError, Unauthorized, Conflict, Forbidden
+  BadRequest, NotFound, InternalServerError, Unauthorized, Conflict, Forbidden,
 };
