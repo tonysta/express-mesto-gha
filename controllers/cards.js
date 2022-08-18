@@ -31,10 +31,11 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .then((card) => {
+      console.log(card, req.user._id);
       if (!card) {
         return res.status(NotFound).send({ message: 'Такой карточки не существует' });
       }
-      if (card && card.owner._id !== req.user._id) {
+      if (card.owner.toString() !== req.user._id) {
         return res.status(NotFound).send({ message: 'Эту карту создали не вы' });
       }
       card.remove();
