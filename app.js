@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { celebrate, Joi } = require('celebrate');
 const usersRoute = require('./routes/users');
 const cardsRoute = require('./routes/cards');
 const { NotFound } = require('./utils/constants');
@@ -23,7 +24,15 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+    name: Joi.string().min(2).max(30),
+    avatar: Joi.link(),
+    about: Joi.string().min(2).max(30),
+  }),
+}), createUser);
 app.use(auth);
 app.use('/users', usersRoute);
 app.use('/cards', cardsRoute);

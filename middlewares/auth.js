@@ -3,7 +3,6 @@ const { Unauthorized } = require('../utils/constants');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
-  console.log(req);
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return res
       .status(Unauthorized)
@@ -18,7 +17,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     return res
       .status(Unauthorized)
-      .send(err, { message: 'Необходима авторизация 2' });
+      .send({ message: 'Необходима авторизация 2' });
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса

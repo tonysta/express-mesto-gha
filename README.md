@@ -1,6 +1,6 @@
 [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/tonysta/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/tonysta/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
 
-# Проект Mesto фронтенд + бэкенд (13)
+# Проект Mesto фронтенд + бэкенд (13 + 14)
 
 ## Технологии
 
@@ -8,6 +8,11 @@
 - Node.js
   + Express.js
   + bodyParser
+  + celebrate
+  + joi
+  + jsonwebtoken
+  + bcrypt
+  + validator
 - MongoDB
   + Mongoose
 
