@@ -1,4 +1,6 @@
-const { BadRequest, InternalServerError, Conflict, Unauthorized } = require('./constants');
+const {
+  BadRequest, InternalServerError, Conflict, Unauthorized,
+} = require('./constants');
 
 module.exports.handleError = (err, res) => {
   console.log('>>>', err);
