@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 const { handleError } = require('../utils/handleError');
-const { NotFound } = require('../utils/constants');
+const { NotFound, Forbidden } = require('../utils/constants');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -31,12 +31,11 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .then((card) => {
-      console.log(card, req.user._id);
       if (!card) {
         return res.status(NotFound).send({ message: 'Такой карточки не существует' });
       }
       if (card.owner.toString() !== req.user._id) {
-        return res.status(NotFound).send({ message: 'Эту карту создали не вы' });
+        return res.status(Forbidden).send({ message: 'Эту карту создали не вы' });
       }
       card.remove();
       return res.send({ card });
