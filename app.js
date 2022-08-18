@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const usersRoute = require('./routes/users');
 const cardsRoute = require('./routes/cards');
 const { NotFound } = require('./utils/constants');
@@ -36,6 +36,9 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/users', usersRoute);
 app.use('/cards', cardsRoute);
+
+app.use(errors());
+
 app.use((req, res) => {
   res.status(NotFound).send({ message: 'Cтраницы не существует' });
 });
