@@ -29,13 +29,16 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
-      if (!card || card.owner._id !== req.user._id) {
-        res.status(NotFound).send({ message: 'Такой карточки не существует или ее создали не вы' });
-      } else {
-        res.send({ data: card });
+      if (!card) {
+        return res.status(NotFound).send({ message: 'Такой карточки не существует' });
       }
+      if (card && card.owner._id !== req.user._id) {
+        return res.status(NotFound).send({ message: 'Эту карту создали не вы' });
+      }
+      card.remove();
+      return res.send({ card });
     })
     .catch((err) => handleError(err, res));
 };
