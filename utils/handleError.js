@@ -1,6 +1,7 @@
-const { BadRequest, InternalServerError, Conflict } = require('./constants');
+const { BadRequest, InternalServerError, Conflict, Unauthorized } = require('./constants');
 
 module.exports.handleError = (err, res) => {
+  console.log('>>>', err);
   if (err.name === 'ValidationError') {
     res.status(BadRequest).send({ message: err.message });
     return;
@@ -13,5 +14,9 @@ module.exports.handleError = (err, res) => {
     res.status(Conflict).send({ message: 'Email уже используется' });
     return;
   }
-  res.status(InternalServerError).send({ err, message: 'Что-то пошло не так' });
+  if (err.statusCode === 401) {
+    res.status(Unauthorized).send({ message: err.message });
+    return;
+  }
+  res.status(InternalServerError).send({ message: 'Что-то пошло не так' });
 };

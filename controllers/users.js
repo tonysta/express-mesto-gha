@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { handleError } = require('../utils/handleError');
-const { NotFound, Unauthorized } = require('../utils/constants');
+const { NotFound } = require('../utils/constants');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -97,9 +97,10 @@ module.exports.login = (req, res) => {
           { expiresIn: '7d' },
         );
         res.send({ token });
-      } else {
-        res.status(Unauthorized).send({ message: 'Неправильные почта или пароль' });
       }
     })
-    .catch((err) => handleError(err, res));
+    .catch((err) => {
+      console.log(err);
+      handleError(err, res);
+    });
 };
