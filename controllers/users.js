@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { handleError } = require('../utils/handleError');
+const { handleError } = require('../middlewares/handleError');
 const { NotFound } = require('../utils/constants');
 
 module.exports.getUsers = (req, res) => {
@@ -100,7 +100,6 @@ module.exports.login = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       handleError(err, res);
     });
 };
