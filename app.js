@@ -4,9 +4,11 @@ const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const usersRoute = require('./routes/users');
 const cardsRoute = require('./routes/cards');
-const { NotFound } = require('./utils/constants');
+const { regexUrl } = require('./utils/constants');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { handleError } = require('./middlewares/handleError');
+const { NotFoundError } = require('./middlewares/notFound');
 
 const app = express();
 
@@ -26,16 +28,16 @@ app.use(bodyParser.urlencoded({
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/),
+    avatar: Joi.string().regex(regexUrl),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), createUser);
 app.use(auth);
@@ -44,9 +46,11 @@ app.use('/cards', cardsRoute);
 
 app.use(errors());
 
-app.use((req, res) => {
-  res.status(NotFound).send({ message: 'Cтраницы не существует' });
+app.use((req, res, next) => {
+  next(new NotFoundError('Cтраницы не существует'));
 });
+
+app.use(handleError);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
