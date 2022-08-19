@@ -8,7 +8,7 @@ const { regexUrl } = require('./utils/constants');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { handleError } = require('./middlewares/handleError');
-const { NotFoundError } = require('./middlewares/notFound');
+const { NotFoundError } = require('./utils/errors/notFound');
 
 const app = express();
 

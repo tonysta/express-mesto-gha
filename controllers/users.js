@@ -1,42 +1,49 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { handleError } = require('../middlewares/handleError');
-const { NotFound } = require('../utils/constants');
+const { NotFoundError } = require('../utils/errors/notFound');
+const { ConflictError } = require('../utils/errors/conflictError');
+const { BadRequestError } = require('../utils/errors/badRequestError');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({
       data: users,
     }))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-module.exports.getUserMe = (req, res) => {
+module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user._id)
-    .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else {
-        res.status(NotFound).send({ message: 'Такого пользователя не существует' });
-      }
+    .orFail(() => {
+      throw new NotFoundError('Такого пользователя не существует');
     })
-    .catch((err) => handleError(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        throw new BadRequestError('Объект не найден или данные не валидны');
+      } else {
+        next(err);
+      }
+    });
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
-    .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else {
-        res.status(NotFound).send({ message: 'Такого пользователя не существует' });
-      }
+    .orFail(() => {
+      throw new NotFoundError('Такого пользователя не существует');
     })
-    .catch((err) => handleError(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        throw new BadRequestError('Объект не найден или данные не валидны');
+      } else {
+        next(err);
+      }
+    });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -55,38 +62,53 @@ module.exports.createUser = (req, res) => {
     }))
     .then((user) => User.findById(user._id))
     .then((user) => res.send(user))
-    .catch((err) => handleError(err, res));
+    .catch((err) => {
+      if (err.code === 11000) {
+        next(new ConflictError('email уже используется'));
+      }
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        throw new BadRequestError('Объект не найден или данные не валидны');
+      } else {
+        next(err);
+      }
+    });
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
-    .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else {
-        res.status(NotFound).send({ message: 'Такого пользователя не существует' });
-      }
+    .orFail(() => {
+      throw new NotFoundError('Такого пользователя не существует');
     })
-    .catch((err) => handleError(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        throw new BadRequestError('Объект не найден или данные не валидны');
+      } else {
+        next(err);
+      }
+    });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
-    .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else {
-        res.status(NotFound).send({ message: 'Такого пользователя не существует' });
-      }
+    .orFail(() => {
+      throw new NotFoundError('Такого пользователя не существует');
     })
-    .catch((err) => handleError(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        throw new BadRequestError('Объект не найден или данные не валидны');
+      } else {
+        next(err);
+      }
+    });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
@@ -99,7 +121,5 @@ module.exports.login = (req, res) => {
         res.send({ token });
       }
     })
-    .catch((err) => {
-      handleError(err, res);
-    });
+    .catch(next);
 };
