@@ -21,7 +21,7 @@ module.exports.getUserMe = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Объект не найден или данные не валидны');
+        next(new BadRequestError('Объект не найден или данные не валидны'));
       } else {
         next(err);
       }
@@ -36,7 +36,7 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Объект не найден или данные не валидны');
+        next(new BadRequestError('Объект не найден или данные не валидны'));
       } else {
         next(err);
       }
@@ -65,9 +65,8 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.code === 11000) {
         next(new ConflictError('email уже используется'));
-      }
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Объект не найден или данные не валидны');
+      } else if (err.name === 'ValidationError' || err.name === 'CastError') {
+        next(new BadRequestError('Объект не найден или данные не валидны'));
       } else {
         next(err);
       }
@@ -84,7 +83,7 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Объект не найден или данные не валидны');
+        next(new BadRequestError('Объект не найден или данные не валидны'));
       } else {
         next(err);
       }
@@ -101,7 +100,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Объект не найден или данные не валидны');
+        next(new BadRequestError('Объект не найден или данные не валидны'));
       } else {
         next(err);
       }

@@ -28,7 +28,7 @@ module.exports.createCard = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Объект не найден или данные не валидны');
+        next(new BadRequestError('Объект не найден или данные не валидны'));
       } else {
         next(err);
       }
@@ -68,7 +68,7 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Объект не найден или данные не валидны');
+        next(new BadRequestError('Объект не найден или данные не валидны'));
       } else {
         next(err);
       }
@@ -93,7 +93,7 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new BadRequestError('Объект не найден или данные не валидны');
+        next(new BadRequestError('Объект не найден или данные не валидны'));
       } else {
         next(err);
       }
