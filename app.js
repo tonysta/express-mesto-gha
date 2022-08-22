@@ -9,6 +9,7 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { handleError } = require('./middlewares/handleError');
 const { NotFoundError } = require('./utils/errors/notFound');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
@@ -24,6 +25,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true,
 }));
+
+app.use(requestLogger); // подключаем логгер запросов
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -43,6 +46,8 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/users', usersRoute);
 app.use('/cards', cardsRoute);
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errors());
 
